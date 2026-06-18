@@ -289,9 +289,15 @@ ul{list-style:none}
 .reveal-delay-4{transition-delay:.4s}
 .reveal-delay-5{transition-delay:.5s}
 
-/* ============================================
-   MOBILE OVERRIDES
-   ============================================ */
+/* Section snap scrolling — cowboy.com feel */
+html{scroll-snap-type:y proximity;scroll-behavior:smooth}
+.section-screen{scroll-snap-align:start}
+.hero{scroll-snap-align:start}
+
+/* Cursor — hide default on interactive elements for premium feel */
+@media(hover:hover){
+  a,button,.product-tab,.product-dot{cursor:none}
+}
 @media(max-width:767px){
   :root{--spacing-section-x:1rem;--spacing-section-y:2rem}
   .product-tabs{position:relative;top:auto;right:auto;margin:1rem auto 0}
@@ -526,7 +532,12 @@ ul{list-style:none}
      ========================================== -->
 <section class="section community-section" id="comunidad">
   <h2 class="reveal">Nunca pedaleás solo.</h2>
-  <p class="community-stat reveal reveal-delay-1">Cientos de ciclistas nicaragüenses confían en EnBici. Sé parte de la comunidad.</p>
+  <p class="community-stat reveal reveal-delay-1">Cientos de ciclistas nicaragüenses confían en EnBici. Representante autorizado GW Colombia desde Carretera Sur km 8.5.</p>
+  <div class="reveal reveal-delay-1" style="display:flex;justify-content:center;gap:3rem;flex-wrap:wrap;margin:1.5rem 0;font-size:clamp(24px,3vw,36px);font-weight:400;letter-spacing:-.025em">
+    <div style="text-align:center"><span data-count="1100" style="font-size:clamp(36px,5vw,56px);font-weight:500;color:#BF4800">0</span><br><span style="font-size:14px;color:rgba(29,29,29,.4)">Seguidores</span></div>
+    <div style="text-align:center"><span data-count="350" style="font-size:clamp(36px,5vw,56px);font-weight:500;color:#BF4800">0</span><br><span style="font-size:14px;color:rgba(29,29,29,.4)">Posts</span></div>
+    <div style="text-align:center"><span data-count="5" style="font-size:clamp(36px,5vw,56px);font-weight:500;color:#BF4800">0</span><br><span style="font-size:14px;color:rgba(29,29,29,.4)">Modelos GW</span></div>
+  </div>
   <div class="community-grid reveal reveal-delay-2">
     <img src="https://images.unsplash.com/photo-1471506480208-91b3a4cc78be?w=400&q=80" alt="Ciclista" loading="lazy">
     <img src="https://images.unsplash.com/photo-1507035895480-2b3156c31fc8?w=400&q=80" alt="Ciclista" loading="lazy">

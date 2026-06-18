@@ -451,6 +451,91 @@
   }
 
   /* ============================================================
+     CURSOR FOLLOWER — premium dot trail
+  ============================================================ */
+  function initCursorFollower() {
+    var dot = document.createElement('div');
+    dot.style.cssText = 'position:fixed;width:12px;height:12px;border-radius:50%;background:#BF4800;pointer-events:none;z-index:9999;mix-blend-mode:difference;transition:width .3s,height .3s,background .3s;transform:translate(-50%,-50%);opacity:0';
+    document.body.appendChild(dot);
+    
+    var mx = 0, my = 0, px = 0, py = 0;
+    document.addEventListener('mousemove', function(e) { mx = e.clientX; my = e.clientY; dot.style.opacity = '1'; });
+    document.addEventListener('mouseleave', function() { dot.style.opacity = '0'; });
+    
+    // Hover on links/buttons → enlarge dot
+    document.querySelectorAll('a, button').forEach(function(el) {
+      el.addEventListener('mouseenter', function() { dot.style.width = '32px'; dot.style.height = '32px'; dot.style.background = 'rgba(191,72,0,.4)'; });
+      el.addEventListener('mouseleave', function() { dot.style.width = '12px'; dot.style.height = '12px'; dot.style.background = '#BF4800'; });
+    });
+    
+    function follow() {
+      px += (mx - px) * 0.15;
+      py += (my - py) * 0.15;
+      dot.style.left = px + 'px';
+      dot.style.top = py + 'px';
+      requestAnimationFrame(follow);
+    }
+    follow();
+  }
+
+  /* ============================================================
+     COUNTER ANIMATION — numbers count up on scroll
+  ============================================================ */
+  function initCounters() {
+    document.querySelectorAll('[data-count]').forEach(function(el) {
+      var target = parseInt(el.getAttribute('data-count'), 10);
+      var duration = 2000;
+      var triggered = false;
+      
+      ScrollTrigger.create({
+        trigger: el,
+        start: 'top 90%',
+        onEnter: function() {
+          if (triggered) return;
+          triggered = true;
+          var start = performance.now();
+          function tick(now) {
+            var elapsed = now - start;
+            var progress = Math.min(elapsed / duration, 1);
+            var eased = 1 - Math.pow(1 - progress, 3);
+            el.textContent = Math.floor(eased * target);
+            if (progress < 1) requestAnimationFrame(tick);
+            else el.textContent = target;
+          }
+          requestAnimationFrame(tick);
+        }
+      });
+    });
+  }
+
+  /* ============================================================
+     NAV LINK UNDERLINE — sliding indicator
+  ============================================================ */
+  function initNavUnderline() {
+    var nav = document.getElementById('nav');
+    var links = nav ? nav.querySelectorAll('.nav-links a') : [];
+    if (!links.length) return;
+    
+    var underline = document.createElement('div');
+    underline.style.cssText = 'position:absolute;bottom:12px;height:2px;background:#BF4800;border-radius:1px;transition:left .3s ease,width .3s ease;pointer-events:none';
+    nav.style.position = 'relative';
+    nav.appendChild(underline);
+    
+    function updateUnderline(el) {
+      if (!el) { underline.style.width = '0'; return; }
+      var rect = el.getBoundingClientRect();
+      var navRect = nav.getBoundingClientRect();
+      underline.style.left = (rect.left - navRect.left) + 'px';
+      underline.style.width = rect.width + 'px';
+    }
+    
+    links.forEach(function(link) {
+      link.addEventListener('mouseenter', function() { updateUnderline(link); });
+      link.addEventListener('mouseleave', function() { updateUnderline(null); });
+    });
+  }
+
+  /* ============================================================
      BOOTSTRAP — run everything after DOM is ready
   ============================================================ */
   function boot() {
@@ -460,6 +545,9 @@
     initSectionEnter();
     initWebGLParticles();
     initMagneticButtons();
+    initCursorFollower();
+    initCounters();
+    initNavUnderline();
 
     // ── Banner dismiss auto-restore timer ─────────────────────
     var banner = document.getElementById('banner');
