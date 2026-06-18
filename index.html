@@ -1378,49 +1378,83 @@
       border-color: var(--beige);
     }
 
+    /* Cursor trail */
+    .cursor-trail {
+      position: fixed;
+      width: 8px;
+      height: 8px;
+      background: var(--beige);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      opacity: 0;
+      transition: opacity 300ms ease;
+    }
+
     @media (max-width: 768px) {
-      .custom-cursor { display: none; }
+      .custom-cursor, .cursor-trail { display: none; }
     }
 
     /* ============================================
-       LOADING SCREEN
-       ============================================ */
-    .loader {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: var(--black);
-      z-index: 10000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: opacity 600ms ease, visibility 600ms ease;
-    }
+       .loader {
+         position: fixed;
+         top: 0;
+         left: 0;
+         width: 100%;
+         height: 100%;
+         background: var(--black);
+         z-index: 10000;
+         display: flex;
+         flex-direction: column;
+         align-items: center;
+         justify-content: center;
+         gap: 32px;
+         transition: opacity 600ms ease, visibility 600ms ease;
+       }
 
-    .loader.hidden {
-      opacity: 0;
-      visibility: hidden;
-    }
+       .loader.hidden {
+         opacity: 0;
+         visibility: hidden;
+       }
 
-    .loader-text {
-      font-family: var(--font-display);
-      font-size: clamp(2rem, 5vw, 4rem);
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--white);
-      overflow: hidden;
-    }
+       .loader-text {
+         font-family: var(--font-display);
+         font-size: clamp(2rem, 5vw, 4rem);
+         font-weight: 800;
+         text-transform: uppercase;
+         letter-spacing: 0.1em;
+         color: var(--white);
+         overflow: hidden;
+       }
 
-    .loader-text span {
-      display: inline-block;
-      animation: loaderReveal 0.6s var(--ease-out-expo) forwards;
-      opacity: 0;
-      transform: translateY(100%);
-    }
+       .loader-text span {
+         display: inline-block;
+         animation: loaderReveal 0.6s var(--ease-out-expo) forwards;
+         opacity: 0;
+         transform: translateY(100%);
+       }
 
+       .loader-progress {
+         width: 200px;
+         height: 2px;
+         background: var(--white-10);
+         border-radius: 1px;
+         overflow: hidden;
+       }
+
+       .loader-progress-bar {
+         height: 100%;
+         background: var(--beige);
+         width: 0%;
+         transition: width 100ms ease;
+       }
+
+       .loader-subtitle {
+         font-size: 12px;
+         color: var(--white-40);
+         letter-spacing: 0.2em;
+         text-transform: uppercase;
+       }
     @keyframes loaderReveal {
       to { opacity: 1; transform: translateY(0); }
     }
@@ -1432,12 +1466,18 @@
 
   <!-- Custom Cursor -->
   <div class="custom-cursor" id="cursor"></div>
+  <!-- Cursor Trail -->
+  <div class="cursor-trail" id="cursorTrail"></div>
 
   <!-- Loading Screen -->
   <div class="loader" id="loader">
     <div class="loader-text">
       <span style="animation-delay:0s">E</span><span style="animation-delay:0.05s">n</span><span style="animation-delay:0.1s">B</span><span style="animation-delay:0.15s">i</span><span style="animation-delay:0.2s">c</span><span style="animation-delay:0.25s">i</span>
     </div>
+    <div class="loader-progress">
+      <div class="loader-progress-bar" id="loaderProgress"></div>
+    </div>
+    <div class="loader-subtitle">Nicaragua</div>
   </div>
 
   <!-- ============================================
@@ -1994,7 +2034,23 @@
     // ============================================
     // LOADING SCREEN
     // ============================================
+    const progressBar = document.getElementById('loaderProgress');
+    let progress = 0;
+
+    function updateProgress() {
+      progress += Math.random() * 15 + 5;
+      if (progress > 100) progress = 100;
+      if (progressBar) progressBar.style.width = progress + '%';
+      if (progress < 100) {
+        setTimeout(updateProgress, Math.random() * 200 + 100);
+      }
+    }
+    updateProgress();
+
     window.addEventListener('load', () => {
+      // Complete progress
+      if (progressBar) progressBar.style.width = '100%';
+
       setTimeout(() => {
         document.getElementById('loader').classList.add('hidden');
         animateHero();
@@ -2150,10 +2206,41 @@
     // CUSTOM CURSOR
     // ============================================
     const cursor = document.getElementById('cursor');
+    const cursorTrail = document.getElementById('cursorTrail');
     if (cursor && window.innerWidth > 768) {
+      // Trail positions
+      const trail = [];
+      const trailLength = 8;
+      for (let i = 0; i < trailLength; i++) {
+        const dot = document.createElement('div');
+        dot.style.cssText = `
+          position: fixed;
+          width: ${8 - i * 0.8}px;
+          height: ${8 - i * 0.8}px;
+          background: rgba(232, 224, 208, ${0.5 - i * 0.05});
+          border-radius: 50%;
+          pointer-events: none;
+          z-index: ${9998 - i};
+          transition: opacity 300ms ease;
+        `;
+        document.body.appendChild(dot);
+        trail.push({ el: dot, x: 0, y: 0 });
+      }
+
       document.addEventListener('mousemove', (e) => {
         cursor.style.left = e.clientX - 10 + 'px';
         cursor.style.top = e.clientY - 10 + 'px';
+
+        // Update trail
+        trail.forEach((dot, i) => {
+          setTimeout(() => {
+            dot.x = e.clientX - (8 - i * 0.8) / 2;
+            dot.y = e.clientY - (8 - i * 0.8) / 2;
+            dot.el.style.left = dot.x + 'px';
+            dot.el.style.top = dot.y + 'px';
+            dot.el.style.opacity = '1';
+          }, i * 30);
+        });
       });
 
       document.querySelectorAll('a, button, .model-card, .feature-bullet').forEach(el => {
@@ -2161,6 +2248,43 @@
         el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
       });
     }
+
+    // ============================================
+    // MAGNETIC BUTTONS
+    // ============================================
+    if (window.innerWidth > 768) {
+      document.querySelectorAll('.btn-primary, .btn-secondary, .nav-cta').forEach(btn => {
+        btn.addEventListener('mousemove', (e) => {
+          const rect = btn.getBoundingClientRect();
+          const x = e.clientX - rect.left - rect.width / 2;
+          const y = e.clientY - rect.top - rect.height / 2;
+          btn.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px)`;
+        });
+
+        btn.addEventListener('mouseleave', () => {
+          btn.style.transform = 'translate(0, 0)';
+        });
+      });
+    }
+
+    // ============================================
+    // SECTION TRANSITIONS (smooth opacity)
+    // ============================================
+    const sectionObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('section').forEach(section => {
+      section.style.opacity = '0';
+      section.style.transform = 'translateY(30px)';
+      section.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+      sectionObserver.observe(section);
+    });
 
     // ============================================
     // THREE.JS — WEBGL PARTICLE BACKGROUND
@@ -2176,73 +2300,136 @@
       renderer.setSize(window.innerWidth, window.innerHeight);
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-      // Particles
-      const particlesGeometry = new THREE.BufferGeometry();
-      const count = 800;
-      const positions = new Float32Array(count * 3);
-      const velocities = new Float32Array(count * 3);
+      // === ADVANCED PARTICLE SYSTEM ===
+      const particleCount = 1200;
+      const geometry = new THREE.BufferGeometry();
+      const positions = new Float32Array(particleCount * 3);
+      const colors = new Float32Array(particleCount * 3);
+      const sizes = new Float32Array(particleCount);
+      const velocities = new Float32Array(particleCount * 3);
+      const beige = new THREE.Color(0xE8E0D0);
+      const white = new THREE.Color(0xFFFFFF);
 
-      for (let i = 0; i < count * 3; i += 3) {
-        positions[i] = (Math.random() - 0.5) * 20;
-        positions[i + 1] = (Math.random() - 0.5) * 20;
-        positions[i + 2] = (Math.random() - 0.5) * 20;
-        velocities[i] = (Math.random() - 0.5) * 0.01;
-        velocities[i + 1] = (Math.random() - 0.5) * 0.01;
-        velocities[i + 2] = (Math.random() - 0.5) * 0.01;
+      for (let i = 0; i < particleCount; i++) {
+        const i3 = i * 3;
+        positions[i3] = (Math.random() - 0.5) * 30;
+        positions[i3 + 1] = (Math.random() - 0.5) * 30;
+        positions[i3 + 2] = (Math.random() - 0.5) * 30;
+        velocities[i3] = (Math.random() - 0.5) * 0.005;
+        velocities[i3 + 1] = (Math.random() - 0.5) * 0.005;
+        velocities[i3 + 2] = (Math.random() - 0.5) * 0.005;
+        const mixFactor = Math.random();
+        const color = beige.clone().lerp(white, mixFactor * 0.3);
+        colors[i3] = color.r;
+        colors[i3 + 1] = color.g;
+        colors[i3 + 2] = color.b;
+        sizes[i] = Math.random() * 3 + 0.5;
       }
 
-      particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+      geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
 
-      const particlesMaterial = new THREE.PointsMaterial({
-        size: 0.02,
+      const material = new THREE.PointsMaterial({
+        size: 0.03,
+        vertexColors: true,
+        transparent: true,
+        opacity: 0.5,
+        blending: THREE.AdditiveBlending,
+        sizeAttenuation: true
+      });
+
+      const particleSystem = new THREE.Points(geometry, material);
+      scene.add(particleSystem);
+
+      // === CONNECTING LINES (constellation effect) ===
+      const lineGeometry = new THREE.BufferGeometry();
+      const linePositions = new Float32Array(particleCount * 6);
+      lineGeometry.setAttribute('position', new THREE.BufferAttribute(linePositions, 3));
+      const lineMaterial = new THREE.LineBasicMaterial({
         color: 0xE8E0D0,
         transparent: true,
-        opacity: 0.6,
+        opacity: 0.08,
         blending: THREE.AdditiveBlending
       });
+      const lines = new THREE.LineSegments(lineGeometry, lineMaterial);
+      scene.add(lines);
 
-      const particles = new THREE.Points(particlesGeometry, particlesMaterial);
-      scene.add(particles);
-
-      camera.position.z = 5;
+      camera.position.z = 8;
 
       let mouseX = 0, mouseY = 0;
+      let targetMouseX = 0, targetMouseY = 0;
       document.addEventListener('mousemove', (e) => {
-        mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
-        mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+        targetMouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+        targetMouseY = (e.clientY / window.innerHeight - 0.5) * 2;
       });
 
+      // === SCROLL-BASED EFFECTS ===
+      let scrollProgress = 0;
+      window.addEventListener('scroll', () => {
+        scrollProgress = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+      }, { passive: true });
+
+      let time = 0;
       function animate() {
         requestAnimationFrame(animate);
+        time += 0.001;
 
-        // Rotate particles
-        particles.rotation.x += 0.0003;
-        particles.rotation.y += 0.0005;
+        // Smooth mouse follow
+        mouseX += (targetMouseX - mouseX) * 0.05;
+        mouseY += (targetMouseY - mouseY) * 0.05;
 
-        // Mouse influence
-        particles.rotation.x += mouseY * 0.0003;
-        particles.rotation.y += mouseX * 0.0003;
+        // Rotate with scroll influence
+        particleSystem.rotation.x = time * 0.15 + mouseY * 0.15;
+        particleSystem.rotation.y = time * 0.2 + mouseX * 0.15;
+        particleSystem.rotation.z = scrollProgress * 0.3;
 
-        // Update positions
-        const pos = particlesGeometry.attributes.position.array;
-        for (let i = 0; i < count * 3; i += 3) {
-          pos[i] += velocities[i];
-          pos[i + 1] += velocities[i + 1];
-          pos[i + 2] += velocities[i + 2];
+        // Breathing effect
+        const breathe = Math.sin(time * 2) * 0.1 + 1;
+        particleSystem.scale.set(breathe, breathe, breathe);
 
-          // Boundary check
-          if (Math.abs(pos[i]) > 10) velocities[i] *= -1;
-          if (Math.abs(pos[i + 1]) > 10) velocities[i + 1] *= -1;
-          if (Math.abs(pos[i + 2]) > 10) velocities[i + 2] *= -1;
+        // Update particle positions
+        const pos = geometry.attributes.position.array;
+        let lineIndex = 0;
+        const maxLineDist = 3;
+
+        for (let i = 0; i < particleCount; i++) {
+          const i3 = i * 3;
+          pos[i3] += velocities[i3];
+          pos[i3 + 1] += velocities[i3 + 1];
+          pos[i3 + 2] += velocities[i3 + 2];
+
+          if (Math.abs(pos[i3]) > 15) velocities[i3] *= -1;
+          if (Math.abs(pos[i3 + 1]) > 15) velocities[i3 + 1] *= -1;
+          if (Math.abs(pos[i3 + 2]) > 15) velocities[i3 + 2] *= -1;
         }
-        particlesGeometry.attributes.position.needsUpdate = true;
+        geometry.attributes.position.needsUpdate = true;
+
+        // Update constellation lines (nearest neighbors)
+        const lp = lineGeometry.attributes.position.array;
+        for (let i = 0; i < Math.min(particleCount, 200); i++) {
+          for (let j = i + 1; j < Math.min(particleCount, 200); j++) {
+            const dx = pos[i*3] - pos[j*3];
+            const dy = pos[i*3+1] - pos[j*3+1];
+            const dz = pos[i*3+2] - pos[j*3+2];
+            const dist = Math.sqrt(dx*dx + dy*dy + dz*dz);
+            if (dist < maxLineDist && lineIndex < linePositions.length - 6) {
+              lp[lineIndex++] = pos[i*3];
+              lp[lineIndex++] = pos[i*3+1];
+              lp[lineIndex++] = pos[i*3+2];
+              lp[lineIndex++] = pos[j*3];
+              lp[lineIndex++] = pos[j*3+1];
+              lp[lineIndex++] = pos[j*3+2];
+            }
+          }
+        }
+        lineGeometry.attributes.position.needsUpdate = true;
 
         renderer.render(scene, camera);
       }
 
       animate();
 
-      // Resize
       window.addEventListener('resize', () => {
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
