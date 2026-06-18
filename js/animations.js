@@ -175,16 +175,16 @@
   // ── Product set 1: Monkey → Zebra ───────────────────────────
   var products1 = [
     {
-      name: 'GW Monkey — La versátil',
-      sub: 'Cuadro paso-alto · Shimano 21v · Frenos de disco',
-      img: 'https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=1000&q=85',
-      tags: ['Cuadro aluminio 6061', 'Llantas 29"', 'Suspensión delantera']
+      name: 'GW Zebra — Tu entrada al MTB',
+      sub: 'Ideal para principiantes · Cuadro aluminio · Frenos disco',
+      img: 'https://s3.imginn.com/688506588_18008535107856831_3502327725756954636_n.jpg?stp=dst-jpg_e35_s640x640_sh2.08_tt6',
+      tags: ['Equilibrio perfecto', 'Estabilidad', 'Control total']
     },
     {
-      name: 'GW Zebra — La deportiva',
-      sub: 'Cuadro paso-alto · Suspensión · Shimano 21v',
-      img: 'https://images.unsplash.com/photo-1532298229144-0ec0c57515c7?w=1000&q=85',
-      tags: ['Llantas 29"', 'Frenos hidráulicos', '12.5 kg']
+      name: 'GW Ocelot — La探险adora',
+      sub: 'Mountain bike · Suspensión delantera · 21 velocidades',
+      img: 'https://s3.imginn.com/686517948_966126729297816_2753789692704178521_n.jpg?stp=dst-jpg_e35_s640x640_sh2.08_tt6',
+      tags: ['Para montaña', 'Frenos disco', 'GW Colombia']
     }
   ];
 
@@ -226,10 +226,10 @@
   // ── Product set 2: Zebra → Raven ────────────────────────────
   var products2 = [
     {
-      name: 'GW Zebra — La deportiva',
-      sub: 'Cuadro paso-alto · Suspensión · Shimano 21v',
-      img: 'https://images.unsplash.com/photo-1532298229144-0ec0c57515c7?w=1000&q=85',
-      tags: ['Llantas 29"', 'Frenos hidráulicos', 'Shimano 21v']
+      name: 'GW Jackal 1x11 — Potencia pura',
+      sub: 'Alto rendimiento · Transmisión 1x11 · Frenos hidráulicos',
+      img: 'https://s3.imginn.com/656278221_18002937410856831_3110246088265330419_n.jpg?stp=dst-jpg_e35_p640x640_sh2.08_tt6',
+      tags: ['11 velocidades', 'Potencia', 'Estilo']
     },
     {
       name: 'GW Raven — La intrépida',
