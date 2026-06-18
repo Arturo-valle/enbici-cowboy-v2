@@ -177,13 +177,13 @@
     {
       name: 'GW Zebra — Tu entrada al MTB',
       sub: 'Ideal para principiantes · Cuadro aluminio · Frenos disco',
-      img: 'https://s3.imginn.com/688506588_18008535107856831_3502327725756954636_n.jpg?stp=dst-jpg_e35_s640x640_sh2.08_tt6',
+      img: 'https://cdn.shopify.com/s/files/1/0263/8938/1197/files/1-negra-2.jpg?v=1726761027',
       tags: ['Equilibrio perfecto', 'Estabilidad', 'Control total']
     },
     {
       name: 'GW Ocelot — La探险adora',
       sub: 'Mountain bike · Suspensión delantera · 21 velocidades',
-      img: 'https://s3.imginn.com/686517948_966126729297816_2753789692704178521_n.jpg?stp=dst-jpg_e35_s640x640_sh2.08_tt6',
+      img: 'https://cdn.shopify.com/s/files/1/0263/8938/1197/files/060732-2.jpg?v=1718999061',
       tags: ['Para montaña', 'Frenos disco', 'GW Colombia']
     }
   ];
@@ -228,14 +228,14 @@
     {
       name: 'GW Jackal 1x11 — Potencia pura',
       sub: 'Alto rendimiento · Transmisión 1x11 · Frenos hidráulicos',
-      img: 'https://s3.imginn.com/656278221_18002937410856831_3110246088265330419_n.jpg?stp=dst-jpg_e35_p640x640_sh2.08_tt6',
+      img: 'https://cdn.shopify.com/s/files/1/0263/8938/1197/files/69700_1.jpg?v=1764966051',
       tags: ['11 velocidades', 'Potencia', 'Estilo']
     },
     {
-      name: 'GW Raven — La intrépida',
-      sub: 'Cuadro paso-bajo · Doble suspensión · Shimano 24v',
-      img: 'https://images.unsplash.com/photo-1576435728678-68d0fbf94e91?w=1000&q=85',
-      tags: ['Doble suspensión', '24 velocidades', 'Frenos disco']
+      name: 'GW Monkey — La versátil',
+      sub: 'MTB 29" · Transmisión 3x7 · Frenos disco mecánicos',
+      img: 'https://cdn.shopify.com/s/files/1/0263/8938/1197/files/2-blanco-1_1.jpg?v=1718813670',
+      tags: ['29 pulgadas', '21 velocidades', 'GW Colombia']
     }
   ];
 
