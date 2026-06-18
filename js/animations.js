@@ -536,6 +536,20 @@
   }
 
   /* ============================================================
+     IMAGE REVEAL — clip-path animation on scroll
+  ============================================================ */
+  function initImageReveals() {
+    document.querySelectorAll('.img-reveal').forEach(function(el) {
+      ScrollTrigger.create({
+        trigger: el,
+        start: 'top 85%',
+        onEnter: function() { el.classList.add('visible'); },
+        once: true
+      });
+    });
+  }
+
+  /* ============================================================
      BOOTSTRAP — run everything after DOM is ready
   ============================================================ */
   function boot() {
@@ -548,6 +562,7 @@
     initCursorFollower();
     initCounters();
     initNavUnderline();
+    initImageReveals();
 
     // ── Banner dismiss auto-restore timer ─────────────────────
     var banner = document.getElementById('banner');
