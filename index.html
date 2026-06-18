@@ -119,9 +119,9 @@ ul{list-style:none}
 .hero-subheading{font-size:clamp(18px,2vw,20px);font-weight:400;color:rgba(248,248,245,.6);max-width:36ch;line-height:1.47;position:relative;z-index:1}
 @media(max-width:1023px){.hero-subheading{text-align:center}}
 
-.hero-cta{display:inline-flex;align-items:center;justify-content:center;padding:1rem 1.5rem;border-radius:9999px;font-size:16px;font-weight:500;background:#fff;color:var(--color-dark);transition:background .3s,transform .3s;width:fit-content;position:relative;z-index:1}
+.hero-cta{display:inline-flex;align-items:center;justify-content:center;padding:1rem 1.5rem;border-radius:9999px;font-size:16px;font-weight:500;background:#fff;color:var(--color-dark);transition:background .3s,box-shadow .3s;width:fit-content;position:relative;z-index:1;will-change:transform}
 @media(min-width:1024px){.hero-cta{padding:1.25rem 1.5rem}}
-.hero-cta:hover{background:var(--color-contrast-hex);transform:scale(1.02)}
+.hero-cta:hover{background:var(--color-contrast-hex);box-shadow:0 8px 30px rgba(191,114,0,.25)}
 
 /* Hero footer strip — cowboy exact */
 .hero-strip{position:absolute;z-index:10;bottom:0;left:0;right:0;border-top:1px solid rgba(248,248,245,.15);padding:1rem var(--spacing-section-x);display:flex;gap:5rem;overflow-x:auto;white-space:nowrap;font-size:13px;color:rgba(248,248,245,.6);-ms-overflow-style:none;scrollbar-width:none}
@@ -147,9 +147,9 @@ ul{list-style:none}
 .product-tag{font-size:12px;padding:4px 8px;border-radius:8px;background:rgba(29,29,29,.05);color:var(--color-dark);white-space:nowrap}
 @media(min-width:1024px){.product-tag{margin-right:4px}}
 
-.product-cta{display:inline-flex;align-items:center;justify-content:center;padding:1rem 1.5rem;border-radius:9999px;font-size:16px;font-weight:500;background:var(--color-dark);color:#fff;transition:background .3s,transform .3s;width:fit-content;position:relative;z-index:1}
+.product-cta{display:inline-flex;align-items:center;justify-content:center;padding:1rem 1.5rem;border-radius:9999px;font-size:16px;font-weight:500;background:var(--color-dark);color:#fff;transition:background .3s,box-shadow .3s;width:fit-content;position:relative;z-index:1;will-change:transform}
 @media(min-width:1024px){.product-cta{padding:1.25rem 1.5rem}}
-.product-cta:hover{background:#333;transform:scale(1.02)}
+.product-cta:hover{background:#333;box-shadow:0 8px 30px rgba(0,0,0,.2)}
 
 /* Product image area */
 .product-image-wrap{flex:1;display:flex;align-items:flex-end;justify-content:center;width:100%;position:relative;z-index:1}
@@ -204,7 +204,11 @@ ul{list-style:none}
 .magic-section h3{font-size:clamp(36px,6vw,72px);font-weight:400;letter-spacing:-.025em;line-height:.95;max-width:16ch;margin-bottom:.75rem}
 .magic-section p{font-size:20px;color:rgba(248,248,245,.6);max-width:600px;margin-bottom:2rem;text-wrap:balance}
 .magic-section .hero-cta{background:#fff;color:var(--color-dark)}
-.magic-section .hero-cta:hover{background:var(--color-contrast-hex)}
+.magic-section .hero-cta:hover{background:var(--color-contrast-hex);box-shadow:0 8px 30px rgba(191,114,0,.25)}
+
+/* Magnetic button glow effect */
+.hero-cta:hover,.product-cta:hover{transition:background .3s,box-shadow .3s}
+.hero-cta:active,.product-cta:active{transform:scale(.97)!important}
 
 /* ============================================
    COMMUNITY IMAGE GRID — COWBOY EXACT
@@ -641,204 +645,10 @@ ul{list-style:none}
 </footer>
 
 <!-- ==========================================
-     SCRIPTS — GSAP + THREE.JS + DYNAMIC
+     SCRIPTS — GSAP + THREE.JS ANIMATION SYSTEM
+     (see: js/animations.js for the full system)
      ========================================== -->
-<script>
-// ==========================================
-// GSAP SCROLLTRIGGER — REVEAL ANIMATIONS
-// ==========================================
-gsap.registerPlugin(ScrollTrigger);
-
-document.querySelectorAll('.reveal').forEach(el => {
-  ScrollTrigger.create({
-    trigger: el,
-    start: 'top 90%',
-    onEnter: () => el.classList.add('visible'),
-    once: true
-  });
-});
-
-// ==========================================
-// NAV SCROLL BEHAVIOR — COWBOY EXACT
-// ==========================================
-const nav = document.getElementById('nav');
-let lastScrollY = 0;
-let navSolid = false;
-
-window.addEventListener('scroll', () => {
-  const scrollY = window.scrollY;
-  const heroBottom = document.getElementById('hero').offsetHeight - 80;
-  
-  if (scrollY > heroBottom && !navSolid) {
-    nav.classList.remove('nav--transparent');
-    nav.classList.add('nav--solid');
-    navSolid = true;
-  } else if (scrollY <= heroBottom && navSolid) {
-    nav.classList.add('nav--transparent');
-    nav.classList.remove('nav--solid');
-    navSolid = false;
-  }
-  lastScrollY = scrollY;
-}, { passive: true });
-
-// ==========================================
-// PRODUCT SWITCHERS
-// ==========================================
-const products1 = [
-  {
-    name: 'GW Monkey — La versátil',
-    sub: 'Cuadro paso-alto · Shimano 21v · Frenos de disco',
-    img: 'https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=1000&q=85',
-    tags: ['Cuadro aluminio 6061','Llantas 29"','Suspensión delantera']
-  },
-  {
-    name: 'GW Zebra — La deportiva',
-    sub: 'Cuadro paso-alto · Suspensión · Shimano 21v',
-    img: 'https://images.unsplash.com/photo-1532298229144-0ec0c57515c7?w=1000&q=85',
-    tags: ['Llantas 29"','Frenos hidráulicos','12.5 kg']
-  }
-];
-
-function switchProduct(idx) {
-  const p = products1[idx];
-  document.getElementById('prod1-name').textContent = p.name;
-  document.getElementById('prod1-sub').textContent = p.sub;
-  document.getElementById('prod1-img').src = p.img;
-  
-  // Update tags
-  const tagsContainer = document.querySelector('#modelos .product-tags');
-  tagsContainer.innerHTML = p.tags.map(t => `<span class="product-tag">${t}</span>`).join('');
-  
-  // Update tabs
-  document.querySelectorAll('#modelos .product-tab').forEach((t,i) => t.classList.toggle('active', i === idx));
-  document.querySelectorAll('#modelos .product-dot').forEach((d,i) => d.classList.toggle('active', i === idx));
-  
-  // Animate image transition
-  gsap.fromTo('#prod1-img', {opacity:0.5,scale:0.98}, {opacity:1,scale:1,duration:0.5,ease:'power2.out'});
-}
-
-const products2 = [
-  {
-    name: 'GW Zebra — La deportiva',
-    sub: 'Cuadro paso-alto · Suspensión · Shimano 21v',
-    img: 'https://images.unsplash.com/photo-1532298229144-0ec0c57515c7?w=1000&q=85',
-    tags: ['Llantas 29"','Frenos hidráulicos','Shimano 21v']
-  },
-  {
-    name: 'GW Raven — La intrépida',
-    sub: 'Cuadro paso-bajo · Doble suspensión · Shimano 24v',
-    img: 'https://images.unsplash.com/photo-1576435728678-68d0fbf94e91?w=1000&q=85',
-    tags: ['Doble suspensión','24 velocidades','Frenos disco']
-  }
-];
-
-function switchProduct2(idx) {
-  const p = products2[idx];
-  document.getElementById('prod2-name').textContent = p.name;
-  document.getElementById('prod2-sub').textContent = p.sub;
-  document.getElementById('prod2-img').src = p.img;
-  
-  const tagsContainer = document.querySelector('#modelos-zebra .product-tags');
-  tagsContainer.innerHTML = p.tags.map(t => `<span class="product-tag">${t}</span>`).join('');
-  
-  document.querySelectorAll('#modelos-zebra .product-tab').forEach((t,i) => t.classList.toggle('active', i === idx));
-  document.querySelectorAll('#modelos-zebra .product-dot').forEach((d,i) => d.classList.toggle('active', i === idx));
-  
-  gsap.fromTo('#prod2-img', {opacity:0.5,scale:0.98}, {opacity:1,scale:1,duration:0.5,ease:'power2.out'});
-}
-
-// ==========================================
-// THREE.JS — SUBTLE WEBGL PARTICLES
-// ==========================================
-(function initWebGL() {
-  const hero = document.getElementById('hero');
-  if (!hero) return;
-  
-  const canvas = document.createElement('canvas');
-  canvas.style.cssText = 'position:absolute;inset:0;z-index:1;pointer-events:none;mix-blend-mode:screen;opacity:.5';
-  hero.appendChild(canvas);
-  
-  // Load Three.js dynamically
-  const script = document.createElement('script');
-  script.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
-  script.onload = () => {
-    const THREE = window.THREE;
-    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
-    
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 50);
-    camera.position.z = 5;
-    
-    // Particle field
-    const count = 500;
-    const geo = new THREE.BufferGeometry();
-    const pos = new Float32Array(count * 3);
-    for (let i = 0; i < count * 3; i += 3) {
-      pos[i] = (Math.random() - .5) * 12;
-      pos[i+1] = (Math.random() - .5) * 8;
-      pos[i+2] = (Math.random() - .5) * 2;
-    }
-    geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-    
-    const mat = new THREE.PointsMaterial({
-      color: 0xBF4800,
-      size: 0.015,
-      transparent: true,
-      opacity: .6,
-      blending: THREE.AdditiveBlending,
-      depthWrite: false
-    });
-    
-    const particles = new THREE.Points(geo, mat);
-    scene.add(particles);
-    
-    function resize() {
-      const w = hero.offsetWidth;
-      const h = hero.offsetHeight;
-      renderer.setSize(w, h);
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
-    }
-    resize();
-    window.addEventListener('resize', resize);
-    
-    function animate() {
-      requestAnimationFrame(animate);
-      particles.rotation.y += .0002;
-      particles.rotation.x += .0001;
-      renderer.render(scene, camera);
-    }
-    animate();
-  };
-  document.head.appendChild(script);
-})();
-
-// ==========================================
-// PRESS MARQUEE — DUPLICATE FOR SEAMLESS
-// ==========================================
-(function setupMarquee() {
-  const inner = document.getElementById('pressInner');
-  if (!inner) return;
-  // Already have duplicate items in HTML
-})();
-
-// ==========================================
-// HERO PARALLAX — GSAP
-// ==========================================
-gsap.to('#hero .hero-bg img', {
-  y: 80,
-  ease: 'none',
-  scrollTrigger: {
-    trigger: '#hero',
-    start: 'top top',
-    end: 'bottom top',
-    scrub: 1
-  }
-});
-
-console.log('🚲 EnBici Nicaragua — Listo. Réplica fiel de cowboy.com.');
-</script>
+<script src="js/animations.js"></script>
 
 </body>
 </html>
